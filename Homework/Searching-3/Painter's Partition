@@ -1,0 +1,32 @@
+bool isFeasible(int maxTime, vector<int> &boards, int painters) {
+    int requiredPainters = 1; // Number of minimum painters required
+    int timeTaken = 0;
+    for (int i = 0; i < boards.size(); i++) {
+        if (timeTaken + boards[i] <= maxTime) {
+            timeTaken += boards[i];
+        } else {
+            timeTaken = boards[i];
+            requiredPainters++;
+        }
+    }
+    return requiredPainters <= painters;
+}
+
+int findLargestMinDistance(vector<int> &boards, int painters) {
+    int left = 0, right = 0, n = boards.size();
+    for (int i = 0; i < n; i++) {
+        left = max(left, boards[i]);
+        right += boards[i];
+    }
+    int largestMinDistance = -1;
+    while (left <= right) {
+        int mid = (left + right) / 2;
+        if (isFeasible(mid, boards, painters)) {
+            right = mid - 1;
+            largestMinDistance = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    return largestMinDistance;
+}
