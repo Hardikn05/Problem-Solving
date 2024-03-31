@@ -3,5 +3,5 @@
 - Searching-2
 - Searching-3
 - Searching-4
-- Trees-1
-- Trees-2&3
+- Trees-1&2
+- Trees-3
