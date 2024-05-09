@@ -1,34 +1,37 @@
 class Solution {
 public:
-    int solve(vector<int> nums,int n,vector<int> &dp)
-    {
-        if(n<0)
-        return 0;
-
-        if(n==0)
-        return nums[0];
-
-        if(dp[n]!=-1)
-        return dp[n];
-
-        int include=solve(nums,n-2,dp)+nums[n];
-        int exclude=solve(nums,n-1,dp);
-
-        dp[n]=max(include,exclude);
-        return dp[n];
+    int Memoization(vector<int>& nums,int curr,int n,vector<int>& dp){
+        if(curr>=n) return 0;
+        if(dp[curr]!=-1) return dp[curr];
+        int inc = nums[curr]+Memoization(nums,curr+2,n,dp);
+        int exc = Memoization(nums,curr+1,n,dp);
+        return dp[curr]=max(inc,exc);
     }
     int rob(vector<int>& nums) {
-        if(nums.size()==1)
-        return nums[0];
-        vector<int> first,second,dp1(nums.size()+1,-1),dp2(nums.size()+1,-1);
-        for(int i=0;i<nums.size();i++)
-        {
-            if(i!=0)
-            second.push_back(nums[i]);
-            if(i!=nums.size()-1)
-            first.push_back(nums[i]);
+        if(nums.size()==1) return nums[0];
+        int n = nums.size();
+        vector<int> dp(n,-1);
+        int op1 = Memoization(nums,0,n-1,dp);
+        fill(dp.begin(),dp.end(),-1);
+        int op2 = Memoization(nums,1,n,dp);
+        return max(op1,op2);
+    }
+    // Tabulation
+    int rob(vector<int>& nums) {
+        if(nums.size()==1) return nums[0];
+        int n = nums.size();
+        vector<int> dp(n,-1);
+        dp[0] = nums[0];
+        for(int i=1;i<n-1;i++){
+            dp[i] = max(dp[i-1],nums[i]+(i-2>=0?dp[i-2]:0));
         }
-
-        return max(solve(first,first.size()-1,dp1),solve(second,second.size()-1,dp2));
+        int ans = dp[n-2];
+        fill(dp.begin(),dp.end(),-1);
+        dp[1] = nums[1];
+        for(int i=2;i<n;i++){
+            dp[i] = max(dp[i-1],nums[i]+(i-2>=1?dp[i-2]:0));
+        }
+        ans = max(ans,dp[n-1]);
+        return ans;
     }
 };
